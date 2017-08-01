@@ -7,9 +7,8 @@ ADD_DEFINITIONS("-std=c++14")
 # Reference ChaiScript inlcudes.
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/../ChaiScript/include)
 
-# Create executable.
 ADD_EXECUTABLE(researchChaiScript main.cpp)
-
-# Link executable.
 TARGET_LINK_LIBRARIES(researchChaiScript dl pthread)
 
+ADD_EXECUTABLE(factory factory.cpp)
+TARGET_LINK_LIBRARIES(factory dl pthread)
