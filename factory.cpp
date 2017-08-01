@@ -1,6 +1,8 @@
 
 #include <chaiscript/chaiscript.hpp>
 
+#include <fstream>
+
 class Entity
 {
   public:
@@ -55,8 +57,16 @@ class Factory
     std::map<std::string, Entity> entities;
 };
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc != 2)
+    {
+        printf("%s /path/to/script.js\n", argv[0]);
+        return 1;
+    }
+
+    const char *fileName = argv[1];
+
   chaiscript::ChaiScript chai;
 
   chai.add(chaiscript::fun(&Entity::width), "width");
@@ -76,6 +86,24 @@ int main()
   Factory f;
   chai.add(chaiscript::var(&f), "f");
 
+    // Read the script from file.
+    std::ifstream in(fileName);
+    if (!in.is_open())
+    {
+        printf("Cannot open script file '%s'\n", fileName);
+        return 1;
+    }
+    std::string script;
+    std::string line;
+    while (getline(in, line))
+    {
+        //printf("line '%s'\n", line.c_str());
+        script += line + "\n";
+    }
+    /*
+
+
+
   std::string script = R""(
     f.make_entity(10,10,1,1,"entity1").updater = fun(e){ e.x += 1; e.y += 1 };
     f.make_entity(10,10,10,10,"entity2").updater = fun(e){ e.x += 2; e.y += 2 };
@@ -92,11 +120,12 @@ int main()
     print(f.get_entity("entity2").x == 12)
     print(f.get_entity("entity3").x == 20) // this one has no updater, so it stays the same
 
-    var entity = f.get_entity("entity1")
-    print(entity)
+    var entity = Entity(1, 1, 1, 1, "newentity")
+    print(entity.x)
 
 
     )"";
+    */
 
 
   chai.eval(script);
